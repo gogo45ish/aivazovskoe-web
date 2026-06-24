@@ -44,7 +44,12 @@ import {
 import { siteSettings as localSettings } from "@/data/siteSettings";
 import { homeHero as localHero } from "@/data/homeHero";
 
-const BASE = process.env.STRAPI_URL ?? "http://localhost:1337";
+// STRAPI_URL points at the live CMS. Local dev sets it (.env.local →
+// http://localhost:1337). When unset (e.g. the Vercel "content snapshot"
+// deploy), BASE is "" so: API fetches become relative and fail → the app uses
+// the baked src/data fallbacks, and relative "/uploads/…" image paths resolve
+// same-origin (served from web/public/uploads). Set STRAPI_URL again to go live.
+const BASE = process.env.STRAPI_URL ?? "";
 const ISR = { next: { revalidate: 60 } };
 
 export function strapiImageUrl(url: string | undefined): string | undefined {
