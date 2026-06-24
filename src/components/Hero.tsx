@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import type { HomeHero } from "@/types";
 import BookingBar from "./ui/BookingBar";
+import ResponsiveVideo from "./ui/ResponsiveVideo";
 
 export default function Hero({ hero }: { hero: HomeHero }) {
   const root = useRef<HTMLElement>(null);
@@ -58,24 +59,17 @@ export default function Hero({ hero }: { hero: HomeHero }) {
         className="absolute inset-x-0 will-change-transform"
         style={{ top: "-10%", bottom: "-10%" }}
       >
-        <video
-          className="hero-video absolute inset-0 w-full h-full object-cover"
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster={hero.posterUrl || undefined}
-        >
-          <source src={hero.videoUrl} type="video/mp4" />
-        </video>
-        {hero.posterUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={hero.posterUrl}
-            alt=""
-            className="hero-poster hidden absolute inset-0 w-full h-full object-cover"
-          />
-        )}
+        {/* Image on mobile / reduced-motion; video swaps in on desktop. Lazy so
+            the hero video stops decoding once scrolled past (weak-GPU win). */}
+        <ResponsiveVideo
+          className="absolute inset-0"
+          videoSrc={hero.videoUrl}
+          posterSrc={hero.posterUrl}
+          alt=""
+          sizes="100vw"
+          lazy
+          preload
+        />
       </div>
 
       <div className="scrim" />

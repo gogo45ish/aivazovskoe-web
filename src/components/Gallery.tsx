@@ -206,6 +206,10 @@ export default function Gallery({ images }: { images: StrapiImage[] }) {
                 alt={photo.alt}
                 width={photo.width}
                 height={photo.height}
+                // Slides are ~82vw (<560) / 52vw (<900) / capped 560px desktop —
+                // see calcSlideW(). Without sizes, next/image emits a 1x/2x
+                // srcset off the 1600px intrinsic width and serves up to ~4K.
+                sizes="(max-width: 560px) 82vw, (max-width: 900px) 52vw, 560px"
                 className="w-full h-full object-cover pointer-events-none"
                 unoptimized={strapiImageUnoptimized(photo.src)}
                 draggable={false}

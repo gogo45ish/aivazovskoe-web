@@ -2,6 +2,7 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { gsap, useGSAP } from "@/lib/gsap";
+import ResponsiveVideo from "./ResponsiveVideo";
 
 interface ParallaxBandProps {
   src: string;
@@ -24,7 +25,6 @@ export default function ParallaxBand({
 }: ParallaxBandProps) {
   const root = useRef<HTMLElement>(null);
   const media = useRef<HTMLDivElement>(null);
-  const video = useRef<HTMLVideoElement>(null);
 
   useGSAP(
     () => {
@@ -32,12 +32,8 @@ export default function ParallaxBand({
         "(prefers-reduced-motion: reduce)"
       ).matches;
 
-      // Autoplay the muted background video — but not for reduced-motion users,
-      // who keep the static poster frame instead.
-      if (video.current && !reduce) {
-        video.current.play().catch(() => {});
-      }
-
+      // Video autoplay / mobile + reduced-motion fallback is owned by
+      // <ResponsiveVideo>; here we only drive the scroll parallax + text reveal.
       if (reduce) return;
 
       gsap.fromTo(
@@ -76,18 +72,16 @@ export default function ParallaxBand({
         style={{ top: "-15%", bottom: "-15%" }}
       >
         {videoSrc ? (
-          <video
-            ref={video}
-            className="absolute inset-0 w-full h-full object-cover"
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            poster={src}
-            aria-hidden="true"
-          >
-            <source src={videoSrc} type="video/mp4" />
-          </video>
+          // Decorative background video — lazy so only the in-view band decodes;
+          // mobile / reduced-motion get the poster image instead.
+          <ResponsiveVideo
+            className="absolute inset-0"
+            videoSrc={videoSrc}
+            posterSrc={src}
+            alt={alt}
+            sizes="100vw"
+            lazy
+          />
         ) : (
           <Image src={src} alt={alt} fill className="object-cover" sizes="100vw" />
         )}

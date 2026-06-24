@@ -253,12 +253,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-video {
-    display: none;
-  }
-  .hero-poster {
-    display: block !important;
-  }
+  /* Hero video/poster swap is handled in <ResponsiveVideo> (JS matchMedia), so
+     the <video> is never rendered for reduced-motion users in the first place. */
   * {
     scroll-behavior: auto !important;
   }

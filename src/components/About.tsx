@@ -48,11 +48,12 @@ export default function About({ aboutImage }: { aboutImage?: StrapiImage }) {
 
       if (!reduce) {
         // Text + block reveals
+        // transform + opacity only (no blur()/filter) — keeps reveals on the
+        // GPU compositor and off the rasteriser on weak devices.
         gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((el) => {
           gsap.from(el, {
             autoAlpha: 0,
             y: 20,
-            filter: "blur(5px)",
             duration: 0.8,
             ease: "power3.out",
             scrollTrigger: { trigger: el, start: "top 85%" },

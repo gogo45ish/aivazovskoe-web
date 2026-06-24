@@ -15,16 +15,17 @@ export default function Reveal({ children, delay = 0, className }: RevealProps) 
     () => {
       const el = ref.current!;
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        gsap.set(el, { autoAlpha: 1, y: 0, clearProps: "filter" });
+        gsap.set(el, { autoAlpha: 1, y: 0 });
         return;
       }
+      // transform + opacity only — no blur()/filter, which is costly to
+      // rasterise per-frame on weak GPUs during scroll.
       gsap.fromTo(
         el,
-        { autoAlpha: 0, y: 24, filter: "blur(6px)" },
+        { autoAlpha: 0, y: 24 },
         {
           autoAlpha: 1,
           y: 0,
-          filter: "blur(0px)",
           duration: 0.9,
           delay,
           ease: "power3.out",
